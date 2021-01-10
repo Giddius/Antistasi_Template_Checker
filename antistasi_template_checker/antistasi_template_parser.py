@@ -122,7 +122,7 @@ def get_line(in_file):
     for index, _line in enumerate(readit(in_file).splitlines()):
         _line = _line.split('//')[0]
         _line = _line.split(' call')[0]
-        if _line != '' and '[' in _line:
+        if _line != '' and '[' in _line and not _line.startswith('["spawnMarkerName",') and not _line.startswith('["name",'):
             yield index, _line
 
 
