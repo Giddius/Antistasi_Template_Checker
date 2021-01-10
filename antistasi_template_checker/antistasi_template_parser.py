@@ -1,70 +1,18 @@
-"""
-[summary]
 
-[extended_summary]
-"""
 
 # region [Imports]
 
 # * Standard Library Imports ------------------------------------------------------------------------------------------------------------------------------------>
 
-import gc
 import os
 import re
 import sys
 import json
-import lzma
-import time
-import queue
-import base64
-import pickle
-import random
-import shelve
-import shutil
-import asyncio
-import logging
-import sqlite3
-import platform
-import importlib
-import subprocess
-import unicodedata
-
-from io import BytesIO
-from abc import ABC, abstractmethod
-from copy import copy, deepcopy
-from enum import Enum, Flag, auto
-from time import time, sleep
-from pprint import pprint, pformat
-from string import Formatter, digits, printable, whitespace, punctuation, ascii_letters, ascii_lowercase, ascii_uppercase
-from timeit import Timer
-from typing import Union, Callable, Iterable
-from inspect import stack, getdoc, getmodule, getsource, getmembers, getmodulename, getsourcefile, getfullargspec, getsourcelines
-from zipfile import ZipFile
-from datetime import tzinfo, datetime, timezone, timedelta
-from tempfile import TemporaryDirectory, TemporaryFile
-from textwrap import TextWrapper, fill, wrap, dedent, indent, shorten
-from functools import wraps, partial, lru_cache, singledispatch, total_ordering, reduce
-from importlib import import_module, invalidate_caches
-from contextlib import contextmanager
-from statistics import mean, mode, stdev, median, variance, pvariance, harmonic_mean, median_grouped
-from collections import Counter, ChainMap, deque, namedtuple, defaultdict
-from urllib.parse import urlparse
-from importlib.util import find_spec, module_from_spec, spec_from_file_location
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-from importlib.machinery import SourceFileLoader
-from itertools import chain
-
-# * Third Party Imports ----------------------------------------------------------------------------------------------------------------------------------------->
-
-
-from natsort import natsorted, IGNORECASE, LOCALE
 
 
 from fuzzywuzzy import fuzz, process as fuzzprocess
 
-from pyparsing import nestedExpr
-from .data.identifiers import IDENTIFIERS
-from .data.name_list import NAME_LIST
+from antistasi_template_checker.data.general_data import IDENTIFIERS, JSON_COMBINED_NAME_LIST
 
 # endregion[Imports]
 
@@ -84,8 +32,6 @@ from .data.name_list import NAME_LIST
 # endregion[Logging]
 
 # region [Constants]
-
-THIS_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 # endregion[Constants]
@@ -158,19 +104,14 @@ def readit(in_file, per_lines=False, in_encoding='utf-8', in_errors=None):
 
 # endregion [Helper]
 
-TEMPLATE_FILE = r"D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\Arma_class_parser_utility\temp\antistasi_templates\RHS_AI_USAF_Marines_Arid.sqf"
-
 
 square_bracket_regex = re.compile(r"^.*?(?P<square_bracket_part>\[.*)")
 quoted_regex = re.compile(r'".*?"')
 
-identifiers = set(loadjson(pathmaker(THIS_FILE_DIR, 'identifiers.json')))
+
 json_folder = pathmaker(r"D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\Arma_class_parser_utility\temp\temp_output")
-
-
-def split_file(in_file):
-    content = readit(in_file)
-    writeit('split_off_side_information_vehicles.sqf', content.split('//       Loadouts       //')[0])
+REPORT_SPACING_1 = 10
+REPORT_SPACING_2 = 40
 
 
 def clean_comments(line):
@@ -248,27 +189,15 @@ def filter_token_dict(line):
     return token_dict
 
 
-def all_item_jsons():
-    for json_file in os.scandir(pathmaker(THIS_FILE_DIR, "jsons")):
-        if json_file.is_file() is True:
-            if json_file.name.endswith('_item_names.json'):
-                yield loadjson(json_file.path)
-
-
 def check_item(item):
-    for name_list in all_item_jsons():
-        if item in name_list:
-            return True
+
+    if item in JSON_COMBINED_NAME_LIST:
+        return True
     return False
 
 
 def get_possible_correction(item):
-    name_list = []
-    for json_data in all_item_jsons():
-        name_list += json_data
-    if os.path.isfile(pathmaker(THIS_FILE_DIR, 'jsons', 'full_name_list.json')) is False:
-        writejson(name_list, pathmaker(THIS_FILE_DIR, 'jsons', 'full_name_list.json'))
-    result = fuzzprocess.extractOne(item, name_list, scorer=fuzz.token_sort_ratio)
+    result = fuzzprocess.extractOne(item, JSON_COMBINED_NAME_LIST, scorer=fuzz.token_sort_ratio)
     if result is not None:
         return result[0]
     return None
@@ -282,11 +211,10 @@ def get_content(in_file):
 
 def get_items(in_file):
 
-    _identifiers = []
     for index, content in get_content(in_file):
         for level, items in content.items():
             for item in items:
-                if item not in identifiers and check_item(item) is False and is_integer(item) is False:
+                if item not in IDENTIFIERS and check_item(item) is False and is_integer(item) is False:
                     possible_correction = get_possible_correction(item)
                     yield index, item, possible_correction
 
@@ -295,29 +223,28 @@ def run(in_file):
     dir_name = os.path.dirname(in_file)
     raw_filename = os.path.splitext(os.path.basename(in_file))[0]
     out_file = pathmaker(dir_name, f"{raw_filename}_errors.txt")
-    for _index, x_item, pos_correct in get_items(TEMPLATE_FILE):
-        with open(out_file, 'w') as out_f:
+    with open(out_file, 'w') as out_f:
+        heading = f"Errors for {os.path.basename(in_file)}:"
+        out_f.write(heading + '\n\n')
+        print('\n' + heading + '\n\n')
+        found_errors = 0
+        for _index, x_item, pos_correct in get_items(in_file):
             if '\\' in x_item:
-                text = f"is this maybe an file path? -> {x_item} in line {str(_index)}"
+                text = f'line: {str(_index)}{" "*(REPORT_SPACING_1-len(str(_index)))} -> "{x_item}"{" "*(REPORT_SPACING_2-len(str(x_item)))} | is this maybe an file path?'
             else:
                 if pos_correct is None:
-                    text = f'line: {str(_index)} -> "{x_item}", NO POSSIBLE CORRECTION FOUND'
-                else:
-                    text = f'line: {str(_index)} -> "{x_item}", did you maybe mean "{pos_correct}"'
+                    pos_correct = "NO POSSIBLE CORRECTION FOUND"
+
+                text = f'line: {str(_index)}{" "*(REPORT_SPACING_1-len(str(_index)))} -> "{x_item}"{" "*(REPORT_SPACING_2-len(str(x_item)))} | did you maybe mean  --> {" "*REPORT_SPACING_1} "{pos_correct}"'
+
             print(text)
-
+            found_errors += 1
             out_f.write(text + '\n')
-
+        footer = '\n\n\n' + '#' * 25 + '\n\nFound Errors: ' + str(found_errors)
+        out_f.write(footer)
 # region[Main_Exec]
 
 
 if __name__ == '__main__':
-
-    in_file = sys.argv[1]
-    if os.path.exists(in_file) is False:
-        raise FileNotFoundError(in_file)
-    if os.path.isfile(in_file) is False:
-        raise FileNotFoundError(in_file)
-    run(in_file)
-
+    pass
 # endregion[Main_Exec]

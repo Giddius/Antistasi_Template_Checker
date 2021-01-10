@@ -1,4 +1,2 @@
-click
 fuzzywuzzy
-natsort
-pyparsing
+python-Levenshtein

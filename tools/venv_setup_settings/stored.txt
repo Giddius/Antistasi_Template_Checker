@@ -1,0 +1,7 @@
+memory-profiler
+matplotlib
+import-profiler
+objectgraph
+pipreqs
+pydeps
+--force-reinstall numpy==1.19.3
