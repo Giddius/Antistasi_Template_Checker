@@ -240,7 +240,8 @@ def run(in_file):
             print(text)
             found_errors += 1
             out_f.write(text + '\n')
-        footer = '\n\n\n' + '#' * 25 + '\n\nFound Errors: ' + str(found_errors)
+        footer = '\n\n\n' + '#' * 25 + '\n\nFound Errors: ' + str(found_errors) + '\n\n\n'
+        print(footer)
         out_f.write(footer)
 # region[Main_Exec]
 

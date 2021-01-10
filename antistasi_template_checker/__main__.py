@@ -6,7 +6,7 @@
 
 import os
 import sys
-
+import time
 # * Local Imports ----------------------------------------------------------------------------------------------------------------------------------------------->
 
 from antistasi_template_checker.antistasi_template_parser import run
@@ -41,13 +41,17 @@ def main(in_file):
     if os.path.isfile(in_file) is False:
         raise FileNotFoundError(in_file)
     run(in_file)
-    os.system("pause")
+
 
 # region[Main_Exec]
 
 
 if __name__ == '__main__':
-    input_file = sys.argv[1]
-    main(input_file)
+    for index, input_file in enumerate(sys.argv):
+        if index != 0:
+            main(input_file)
+            print('#' * 10 + f' finished file "{input_file}"')
+
+    os.system("pause")
 
 # endregion[Main_Exec]
