@@ -29,6 +29,7 @@ exclude = [
     ".gitignore",
     ".editorconfig"
 ]
+include = ["README.md"]
 
 [tool.autopep8]
 max-line-length = 250
