@@ -24,19 +24,20 @@ SET _TIMEBLOCK=%_years%-%_months%-%_days%_%_hours%-%_minutes%-%_seconds%
 SET _TIMEBLOCK_TIME=%_hours%-%_minutes%-%_seconds%
 SET _TIMEBLOCK_DATE=%_years%-%_months%-%_days%
 
-
+call pskill64 Dropbox
+call pyclean -v ..\
 rem --upx-dir "D:\Dropbox\hobby\Modding\Ressources\python\upx\upx-3.96-win64" ^
 rem --upx-exclude "vcruntime140.dll" ^
 
 set INPATH=%~dp1
 set INFILE=%~nx1
 set INFILEBASE=%~n1
-cd %_THIS_FILE_DIR%
-call ..\.venv\Scripts\activate
-set _CONFIG_FILE=%_THIS_FILE_DIR%\_project_devmeta.env
+cd %_THIS_FILE_DIR%\..
+call .venv\Scripts\activate.bat
+set _CONFIG_FILE=tools\_project_devmeta.env
 for /f %%i in (%CONFIG_FILE%) do set %%i
 set _OUT_DIR=%WORKSPACEDIR%\pyinstaller_output\%_TIMEBLOCK_DATE%
-RD /S /Q %WORKSPACEDIR%\pyinstaller_output
+RD /S /Q %WORKSPACEDIR%\pyinstaller_output\%_TIMEBLOCK_DATE%
 mkdir %_OUT_DIR%
 cd %INPATH%
 
@@ -58,4 +59,4 @@ call pyinstaller --clean ^
 --distpath %_OUT_DIR%\dist ^
 --workpath %_OUT_DIR%\work ^
 --specpath %_OUT_DIR%\spec ^
-D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\Antistasi_Template_Checker\antistasi_template_checker\__main__.py
+"D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\Antistasi_Template_Checker\antistasi_template_checker\__main__.py"
