@@ -1,0 +1,13 @@
+[
+    "Solid",
+    "SolidFull",
+    "SolidBorder",
+    "Border",
+    "Horizontal",
+    "Vertical",
+    "Grid",
+    "FDiagonal",
+    "BDiagonal",
+    "DiagGrid",
+    "Cross"
+]

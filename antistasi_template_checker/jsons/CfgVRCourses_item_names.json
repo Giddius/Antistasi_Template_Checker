@@ -1,0 +1,18 @@
+[
+    "Default",
+    "TargetDesignation",
+    "Launchers",
+    "Placeables",
+    "Ballistics",
+    "CommandingMovement",
+    "CommandingBehaviour",
+    "CommandingVehicles",
+    "CommandingActions",
+    "HeliBasics",
+    "HeliWeapons",
+    "HeliSlingload",
+    "HeliAdvanced",
+    "WeaponHandlingA",
+    "WeaponHandlingB",
+    "WeaponHandlingC"
+]
