@@ -7,11 +7,14 @@
 
 # region [Imports]
 
+# * Standard Library Imports ---------------------------------------------------------------------------->
 import os
 import sys
-import time
-import inspect
+
+# * Third Party Imports --------------------------------------------------------------------------------->
 import click
+
+# * Local Imports --------------------------------------------------------------------------------------->
 from antistasi_template_checker.engine.antistasi_template_parser import run, readit, pathmaker
 
 # endregion[Imports]

@@ -5,15 +5,21 @@
 """
 # region [Imports]
 
+# * Standard Library Imports ---------------------------------------------------------------------------->
 import os
 import re
 import sys
 import json
+
+# * Third Party Imports --------------------------------------------------------------------------------->
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process as fuzzprocess
+
+# * Local Imports --------------------------------------------------------------------------------------->
 from antistasi_template_checker.data.name_list import NAME_LIST
 from antistasi_template_checker.data.identifiers import IDENTIFIERS
 from antistasi_template_checker.utility.named_tuples import TemplateItem
+
 # endregion[Imports]
 
 # region [TODO]

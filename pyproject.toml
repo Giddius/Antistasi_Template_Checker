@@ -1,0 +1,58 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "antistasi_template_checker"
+author = "antistasi_tools"
+home-page = "https://github.com/Giddius/Antipetros_Discord_Bot"
+classifiers = ["License :: OSI Approved :: MIT License"]
+description-file = "README.md"
+license = "MIT"
+requires = []
+
+[tool.flit.scripts]
+template_checker = "antistasi_template_checker.__main__:cli"
+
+[tool.flit.sdist]
+exclude = [
+    "pyinstaller_output",
+    "temp",
+    "misc",
+    "docs",
+    ".venv",
+    "tools",
+    ".pydeps",
+    ".isort.cfg",
+    "tests",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig"
+]
+
+[tool.autopep8]
+max-line-length = 250
+ignore = ["E402", "E501"]
+
+[tool.isort]
+line_length = 150
+sections = [
+    "FUTURE",
+    "STDLIB",
+    "THIRDPARTY",
+    "PYQT",
+    "GID",
+    "FIRSTPARTY",
+    "LOCALFOLDER"
+]
+known_pyqt = ["PyQt5"]
+known_gid = ["gidtools", "gidlogger", "gidqtutils", "gidviewmodels"]
+import_heading_stdlib = "* Standard Library Imports ---------------------------------------------------------------------------->"
+import_heading_thirdparty = "* Third Party Imports --------------------------------------------------------------------------------->"
+import_heading_firstparty = "* Local Imports --------------------------------------------------------------------------------------->"
+import_heading_pyqt = "* PyQt5 Imports --------------------------------------------------------------------------------------->"
+import_heading_gid = "* Gid Imports ----------------------------------------------------------------------------------------->"
+ensure_newline_before_comments = true
+balanced_wrapping = true
+lines_after_imports = 1
+length_sort = true
